@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VirPet — Project Lecture Note</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 2cm 2cm 2.4cm 2cm;
+      @bottom-center {
+        content: "VirPet — Project Lecture Note | Page " counter(page);
+        font-family: "Times New Roman", Times, serif;
+        font-size: 9pt;
+        color: #555;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { font-size: 11pt; }
+    body {
+      font-family: "Times New Roman", Times, Georgia, serif;
+      line-height: 1.5;
+      color: #111;
+      background: #ddd;
+      margin: 0;
+    }
+
+    .wrap {
+      max-width: 21cm;
+      margin: 1rem auto;
+      background: #fff;
+      padding: 2cm 2cm 2.2cm;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.1);
+    }
+
+    @media print {
+      body { background: #fff; }
+      .wrap { max-width: none; margin: 0; box-shadow: none; padding: 0; }
+      .no-print { display: none !important; }
+      a { color: #111; text-decoration: none; }
+      h2, h3, table, pre, .avoid-break { page-break-inside: avoid; }
+      .section-break { page-break-before: always; }
+    }
+
+    .title-block { border-bottom: 2px solid #111; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+    .title-block h1 { font-size: 18pt; margin: 0 0 0.35rem; font-weight: bold; }
+    .title-block .subtitle { font-size: 12pt; margin: 0 0 1rem; color: #333; }
+    .title-block .meta-line { font-size: 10.5pt; margin: 0.2rem 0; }
+
+    .lang-bar {
+      font-family: system-ui, sans-serif;
+      font-size: 0.8rem;
+      text-align: right;
+      margin-bottom: 0.75rem;
+      color: #555;
+    }
+    .lang-bar a { color: #333; }
+
+    .print-hint {
+      font-family: system-ui, sans-serif;
+      font-size: 0.8rem;
+      background: #f0ebe0;
+      border: 1px solid #999;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 13pt;
+      margin: 1.75rem 0 0.6rem;
+      padding-top: 0.25rem;
+      border-top: 1px solid #ccc;
+    }
+    h2:first-of-type { border-top: none; margin-top: 0; }
+
+    h3 { font-size: 11.5pt; margin: 1.25rem 0 0.45rem; color: #222; }
+    h4 { font-size: 11pt; margin: 1rem 0 0.35rem; font-weight: bold; }
+
+    p { margin: 0 0 0.6rem; text-align: justify; }
+    ul, ol { margin: 0 0 0.65rem; padding-left: 1.3rem; }
+    li { margin-bottom: 0.2rem; }
+
+    table.lecture {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.65rem 0 1rem;
+      font-size: 10pt;
+    }
+    table.lecture th, table.lecture td {
+      border: 1px solid #333;
+      padding: 0.35rem 0.5rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    table.lecture th { background: #f2f0ea; font-weight: bold; }
+
+    pre, code {
+      font-family: Consolas, "Liberation Mono", monospace;
+      font-size: 9pt;
+    }
+    pre {
+      background: #f8f6f0;
+      border: 1px solid #bbb;
+      padding: 0.6rem 0.7rem;
+      margin: 0.45rem 0 0.75rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    code { background: #eee; padding: 0.05em 0.2em; }
+
+    .tree { font-size: 9.5pt; line-height: 1.35; }
+
+    .design-note {
+      border-left: 3px solid #444;
+      padding: 0.45rem 0.75rem;
+      margin: 0.65rem 0;
+      background: #faf9f6;
+      font-size: 10.5pt;
+    }
+
+    .student-box {
+      border: 1px solid #333;
+      padding: 0.65rem 0.85rem;
+      margin: 1rem 0 1.25rem;
+      font-size: 10.5pt;
+    }
+    .student-box table { width: 100%; border-collapse: collapse; }
+    .student-box td { padding: 0.25rem 0; vertical-align: top; }
+    .student-box td:first-child { width: 42%; font-weight: bold; }
+
+    .toc { font-size: 10.5pt; margin: 1rem 0; }
+    .toc ol { padding-left: 1.2rem; }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+
+<!-- <p class="lang-bar no-print"><a href="rapor.html">Türkçe sürüm (rapor.html)</a></p> -->
+<!-- <p class="print-hint no-print">PDF: <strong>Ctrl+P</strong> → Save as PDF → paper <strong>A4</strong>.</p> -->
+
+  <header class="title-block">
+    <h1>VirPet Project</h1>
+    <p class="subtitle">Lecture Note — Game model, event cards, Swing UI, and Android port<br>
+    Stat management, file-based card loading, sprite composition, listeners, and screen navigation</p>
+    <p class="meta-line"><strong>Classes covered:</strong>
+      <code>PetGameModel</code>, <code>StatDelta</code>, <code>EventCard</code>,
+      <code>EventCardLoader</code>, <code>EventCardDeck</code>,
+      <code>PetCreationApp</code>, <code>PetSpriteComposer</code>, <code>GameAudio</code>,
+      <code>androidPort/.../VirPetActivity.java</code></p>
+    <p class="meta-line"><strong>Goal:</strong> Explain each class and important methods in an easy-to-follow way, using the same lecture-note format as the instructor’s Tetris example (Class/Method — Purpose — Teaching point).</p>
+  </header>
+
+  <div class="student-box avoid-break">
+    <table>
+      <tr><td>Student</td><td>Emine Mihrinaz Kurt</td></tr>
+      <tr><td>Student ID</td><td>24040102017</td></tr>
+      <tr><td>GitHub repository</td><td><a href="https://github.com/CortXVenomSkulls/virPet">https://github.com/CortXVenomSkulls/virPet</a></td></tr>
+      <tr><td>Related documents</td><td><code>README.md</code>, <code>manual.html</code>, <code>rapor.html</code> (Turkish)</td></tr>
+    </table>
+  </div>
+
+  <nav class="toc avoid-break">
+    <strong>Table of contents</strong>
+    <ol>
+      <li>Big picture: How the project is organized</li>
+      <li>Game model classes (<code>PetGameModel</code>, <code>StatDelta</code>, <code>EventCard</code>)</li>
+      <li>Event card loading and deck (<code>EventCardLoader</code>, <code>EventCardDeck</code>)</li>
+      <li>UI layer (<code>PetCreationApp</code>, <code>PetSpriteComposer</code>, <code>GameAudio</code>)</li>
+      <li>Assets and card file format</li>
+      <li>Android port</li>
+      <li>Running the project</li>
+      <li>Suggested teaching sequence</li>
+      <li>Final summary</li>
+    </ol>
+  </nav>
+
+  <h2>1. Big Picture: How the Project Is Organized</h2>
+  <p>This version is <strong>component-based</strong>, similar to the instructor’s Tetris split into <code>game</code>, <code>ui</code>, and <code>model</code> packages. VirPet uses a single default package; responsibilities are separated by class. The application class controls navigation; the model holds stat rules; the card system reads external data; UI classes build Swing screens and drawing.</p>
+
+  <h3>Class roles</h3>
+  <table class="lecture">
+    <tr><th>Class / file</th><th>Purpose</th><th>Teaching point</th></tr>
+    <tr>
+      <td><code>PetCreationApp</code></td>
+      <td>Application entry point and screen controller.</td>
+      <td>Connects creation screen, game screen, Yes/No, stat bars, audio, and restart.</td>
+    </tr>
+    <tr>
+      <td><code>PetGameModel</code></td>
+      <td>Pure numeric game rules.</td>
+      <td>Stats, time passage, loss conditions, PNG paths from weight/affection; no Swing.</td>
+    </tr>
+    <tr>
+      <td><code>EventCardLoader</code> / <code>EventCardDeck</code></td>
+      <td>Load external cards and draw randomly.</td>
+      <td>Content outside code; edit <code>.cards</code> only to add events.</td>
+    </tr>
+    <tr>
+      <td><code>PetSpriteComposer</code></td>
+      <td>Merge part PNGs into one sprite.</td>
+      <td>16×48 canvas, layer order, drawing with <code>Graphics2D</code>.</td>
+    </tr>
+    <tr>
+      <td><code>GameAudio</code></td>
+      <td>Play WAV via JDK <code>Clip</code>.</td>
+      <td>Looping background and short SFX; no external player.</td>
+    </tr>
+    <tr>
+      <td><code>androidPort/.../VirPetActivity</code></td>
+      <td>Mobile edition of the same game.</td>
+      <td>Activity + View; <code>AssetManager</code> and <code>MediaPlayer</code> (MP3).</td>
+    </tr>
+  </table>
+
+  <h3>Important design idea</h3>
+  <div class="design-note">
+    <strong>Model–UI separation:</strong> <code>PetGameModel</code> does not know card text or buttons; it only receives a <code>StatDelta</code> and updates stats. The UI reads the model and redraws. This mirrors the Tetris <code>GameListener</code> bridge between <code>TetrisGame</code> and <code>GameView</code> — in VirPet the bridge is direct method calls in <code>PetCreationApp</code>.
+  </div>
+
+  <h3>Simplified runtime flow</h3>
+  <pre>App starts → Creation (parts + name) → Start → Event card
+    → Yes/No → PetGameModel.applyChoice → Time passage → Lost?
+    → No: next card | Yes: Game over → Play again → Creation</pre>
+
+  <h3>Project tree</h3>
+  <pre class="tree">virPet/
+├── PetCreationApp.java
+├── PetGameModel.java
+├── PetSpriteComposer.java
+├── StatDelta.java
+├── EventCard.java
+├── EventCardLoader.java
+├── EventCardDeck.java
+├── GameAudio.java
+├── assets/          (parts/, event_cards.cards, audio, font, bg.png)
+├── androidPort/
+└── manual.html, rapor.html, rapor-en.html</pre>
+
+  <h2 class="section-break">2. Game Model Classes</h2>
+  <p>This layer acts as the game engine: no login forms or file persistence; stat rules and sprite path resolution live here.</p>
+
+  <h3>2.1 StatDelta.java</h3>
+  <p>Carries the effect of one event card choice on four stats. Omitted fields in the card file count as 0.</p>
+  <table class="lecture">
+    <tr><th>Element</th><th>Purpose</th><th>Teaching point</th></tr>
+    <tr><td><code>hunger, affection, weight, health</code></td><td>Four public final fields.</td><td>Immutable data object used when applying a choice.</td></tr>
+    <tr><td><code>StatDelta(...)</code></td><td>Constructor.</td><td><code>this.field = parameter</code> assignment pattern.</td></tr>
+    <tr><td><code>StatDelta.ZERO</code></td><td>All deltas zero.</td><td>Shared constant; loader uses it for missing yes/no lines.</td></tr>
+  </table>
+  <pre>public static final StatDelta ZERO = new StatDelta(0, 0, 0, 0);</pre>
+
+  <h3>2.2 EventCard.java</h3>
+  <p>One Reigns-style dilemma: id, text, and two <code>StatDelta</code> values for yes and no.</p>
+  <table class="lecture">
+    <tr><th>Method</th><th>Purpose</th><th>Teaching point</th></tr>
+    <tr><td><code>EventCard(id, text, yes, no)</code></td><td>Builds one card.</td><td><code>private final</code> fields — encapsulation.</td></tr>
+    <tr><td><code>getId()</code>, <code>getText()</code>, <code>getYes()</code>, <code>getNo()</code></td><td>Read-only access.</td><td>Loaded file data cannot be changed from outside.</td></tr>
+  </table>
+
+  <h3>2.3 PetGameModel.java</h3>
+  <p>Core logic: stat changes, passive time, game-over messages, body and face PNG paths from weight and affection.</p>
+
+  <h4>Constants (thresholds)</h4>
+  <table class="lecture avoid-break">
+    <tr><th>Constant</th><th>Value</th><th>Teaching point</th></tr>
+    <tr><td><code>STAT_MIN</code> / <code>STAT_MAX</code></td><td>0 / 100</td><td><code>clamp()</code> prevents overflow.</td></tr>
+    <tr><td><code>WEIGHT_SKINNY</code> / <code>WEIGHT_FAT</code></td><td>35 / 65</td><td>Which body image (skinny / normal / fat).</td></tr>
+    <tr><td><code>AFFECTION_SAD</code> / <code>AFFECTION_HAPPY</code></td><td>35 / 65</td><td>Which face image (sad / normal / happy).</td></tr>
+    <tr><td><code>TICK_HUNGER</code> etc.</td><td>+3, −2, −1, −2</td><td>Automatic per-turn effect after each choice.</td></tr>
+  </table>
+
+  <h4>Method summary</h4>
+  <table class="lecture">
+    <tr><th>Method</th><th>Purpose</th><th>Teaching point</th></tr>
+    <tr><td><code>PetGameModel(...)</code></td><td>Part paths, style ids, name; initial stats.</td><td>Name <code>trim</code>; default <code>"Pet"</code> if empty — ternary operator.</td></tr>
+    <tr><td><code>applyChoice(StatDelta)</code></td><td>Applies choice, then <code>applyTimePassage()</code>.</td><td>Early return if game over or null delta.</td></tr>
+    <tr><td><code>resolveBodyPath()</code> / <code>resolveFacePath()</code></td><td><code>Path</code> from current weight/affection.</td><td>Chain: <code>partsRoot.resolve("bodies").resolve(idStr)</code>.</td></tr>
+    <tr><td><code>getGameOverMessage()</code></td><td>User-facing English message.</td><td><code>switch</code> on <code>GameOverReason</code> enum.</td></tr>
+    <tr><td><code>evaluateLossConditions()</code> (private)</td><td>Affection ≤0 or health ≤0.</td><td><code>LEFT_HOME</code>, <code>OBESITY</code>, <code>STARVATION</code>.</td></tr>
+  </table>
+
+  <pre>public enum GameOverReason {
+    NONE, OBESITY, STARVATION, LEFT_HOME
+}</pre>
+  <p><strong>Why use an enum?</strong> Typos are caught at compile time; safer than string constants (same emphasis as in the Tetris lecture notes).</p>
+
+  <h2 class="section-break">3. Event Card Loading and Deck</h2>
+
+  <h3>3.1 EventCardLoader.java</h3>
+  <p>Reads <code>assets/event_cards.cards</code> line by line and builds a <code>List&lt;EventCard&gt;</code>.</p>
+  <table class="lecture">
+    <tr><th>Method</th><th>Purpose</th><th>Teaching point</th></tr>
+    <tr><td><code>private EventCardLoader()</code></td><td>Blocks instantiation.</td><td>Utility class: only <code>load</code> is used.</td></tr>
+    <tr><td><code>load(Path path)</code></td><td>Parses the file.</td><td><code>throws IOException</code>; try-with-resources closes <code>BufferedReader</code>.</td></tr>
+    <tr><td><code>parseDelta(String)</code> (private)</td><td>Parses lines like <code>hunger=-14 affection=3</code>.</td><td>Empty rest → <code>StatDelta.ZERO</code>.</td></tr>
+  </table>
+
+  <h4>File format (example)</h4>
+  <pre>card empty_bowl
+text
+The food bowl is empty. Your pet looks at you with big eyes. Fill it up?
+yes hunger=-14 affection=3 weight=6
+no hunger=6 affection=-6
+end</pre>
+  <p><strong>44</strong> cards total. Lines starting with <code>#</code> and blank lines are ignored.</p>
+
+  <h3>3.2 EventCardDeck.java</h3>
+  <table class="lecture">
+    <tr><th>Method</th><th>Purpose</th><th>Teaching point</th></tr>
+    <tr><td><code>EventCardDeck(List)</code></td><td>Rejects empty list.</td><td><code>Collections.unmodifiableList</code> protects internal list.</td></tr>
+    <tr><td><code>drawNext()</code></td><td>Returns random card.</td><td><code>do-while</code>: avoids same card twice in a row when possible.</td></tr>
+  </table>
+
+  <h2 class="section-break">4. UI Layer</h2>
+  <p>Swing builds screens; user actions are forwarded to the model and deck.</p>
+
+  <h3>4.1 PetCreationApp.java</h3>
+  <p>Main class: <code>CardLayout</code> for <em>creation</em> and <em>game</em> panels; inner classes <code>CreationPreviewPanel</code>, <code>GamePreviewPanel</code>, <code>StatBarsPanel</code>.</p>
+  <table class="lecture">
+    <tr><th>Method / structure</th><th>Purpose</th><th>Teaching point</th></tr>
+    <tr><td><code>main(String[])</code></td><td>Program entry.</td><td>Font load, card list, <code>EventCardDeck</code>, show frame.</td></tr>
+    <tr><td><code>buildCreationCard()</code> / <code>buildGameCard()</code></td><td>Build both screens.</td><td>Arrow labels cycle parts; stat bars and event text on game card.</td></tr>
+    <tr><td><code>startGame()</code></td><td>Creates <code>PetGameModel</code>, starts music.</td><td>Model built from name field; first card drawn.</td></tr>
+    <tr><td><code>resolveEvent(boolean yes)</code></td><td>Handles Yes/No.</td><td><code>model.applyChoice</code> → <code>afterGameStep()</code> → refresh bars/sprite.</td></tr>
+    <tr><td><code>showGameOverInEventPanel()</code></td><td>Loss message and sound.</td><td><code>death.wav</code> or <code>runaway.wav</code>.</td></tr>
+    <tr><td><code>returnToCreation()</code></td><td>Play again.</td><td>Reset model; switch back to creation card.</td></tr>
+    <tr><td><code>installTapSounds(JFrame)</code></td><td>Global click sound.</td><td><code>AWTEventListener</code> on all mouse clicks.</td></tr>
+  </table>
+
+  <h3>4.2 PetSpriteComposer.java</h3>
+  <table class="lecture avoid-break">
+    <tr><th>Method</th><th>Purpose</th><th>Teaching point</th></tr>
+    <tr><td><code>SPRITE_W</code> / <code>SPRITE_H</code></td><td>16×48 canvas.</td><td><code>BufferedImage.TYPE_INT_ARGB</code> for transparency.</td></tr>
+    <tr><td><code>compose(hat, leg, body, face)</code></td><td>Stacks four PNGs.</td><td>Legs y=32, body/face y=16, hat y=0.</td></tr>
+    <tr><td><code>drawAt(g, path, x, y)</code> (private)</td><td>Draws one part.</td><td><code>ImageIO.read</code>; missing files skipped quietly.</td></tr>
+  </table>
+
+  <h3>4.3 GameAudio.java</h3>
+  <table class="lecture">
+    <tr><th>Method</th><th>Purpose</th><th>Teaching point</th></tr>
+    <tr><td><code>startBgMusic(Path)</code></td><td>Loop <code>bg.wav</code>.</td><td><code>Clip.LOOP_CONTINUOUSLY</code>.</td></tr>
+    <tr><td><code>playTap</code> / <code>playDeath</code> / <code>playRunaway</code></td><td>Short SFX.</td><td>Static <code>sfxClips</code> list; listener closes clip when done.</td></tr>
+    <tr><td><code>shutdown()</code></td><td>Cleanup on exit.</td><td>Called from <code>windowClosing</code>.</td></tr>
+  </table>
+
+  <h2 class="section-break">5. Assets</h2>
+  <table class="lecture avoid-break">
+    <tr><th>Layer</th><th>Y</th><th>Selection</th></tr>
+    <tr><td>Legs</td><td>32</td><td><code>legsN.png</code></td></tr>
+    <tr><td>Body</td><td>16</td><td>Weight → skinny / normal / fat</td></tr>
+    <tr><td>Face</td><td>16</td><td>Affection → sad / normal / happy</td></tr>
+    <tr><td>Hat</td><td>0</td><td><code>hatN.png</code></td></tr>
+  </table>
+  <p>Audio: WAV on desktop; same files as MP3 under <code>app/src/main/assets/</code> on Android.</p>
+
+  <h2 class="section-break">6. Android Port</h2>
+  <p><code>VirPetActivity.java</code> packs creation, game, and embedded model/card/audio logic in one file for portability; rules match the desktop build.</p>
+  <table class="lecture">
+    <tr><th>Feature</th><th>Desktop</th><th>Android</th></tr>
+    <tr><td>UI</td><td>Swing</td><td>LinearLayout, custom <code>View</code></td></tr>
+    <tr><td>Audio</td><td><code>javax.sound.sampled</code></td><td><code>MediaPlayer</code></td></tr>
+    <tr><td>Files</td><td><code>java.nio.file</code></td><td><code>AssetManager</code></td></tr>
+  </table>
+
+  <h2 class="section-break">7. Running the Project</h2>
+  <pre>cd virPet
+javac -source 8 -target 8 *.java
+java PetCreationApp</pre>
+  <pre>cd androidPort
+export ANDROID_HOME=~/Android/Sdk
+./gradlew assembleDebug</pre>
+  <p>Repository: <a href="https://github.com/CortXVenomSkulls/virPet">https://github.com/CortXVenomSkulls/virPet</a></p>
+
+  <h2 class="section-break">8. Suggested Teaching Sequence</h2>
+  <table class="lecture">
+    <tr><th>Step</th><th>Topic</th><th>Teaching point</th></tr>
+    <tr><td>1</td><td><code>StatDelta</code> and <code>EventCard</code></td><td>Data objects and encapsulation.</td></tr>
+    <tr><td>2</td><td><code>EventCardLoader</code> and <code>.cards</code> format</td><td>File I/O, try-with-resources.</td></tr>
+    <tr><td>3</td><td><code>PetGameModel</code> constants and <code>applyChoice</code></td><td>Stats and time passage.</td></tr>
+    <tr><td>4</td><td><code>resolveBodyPath</code> / sprite thresholds</td><td>Conditional file paths.</td></tr>
+    <tr><td>5</td><td><code>PetSpriteComposer</code></td><td>Canvas and layered drawing.</td></tr>
+    <tr><td>6</td><td><code>PetCreationApp</code> creation screen</td><td>Swing layout, preview panel.</td></tr>
+    <tr><td>7</td><td>Game screen and <code>resolveEvent</code></td><td>Model–UI connection.</td></tr>
+    <tr><td>8</td><td><code>GameAudio</code> and Android port</td><td>Platform differences.</td></tr>
+  </table>
+
+  <h2 class="section-break">9. Final Summary</h2>
+  <p>VirPet combines object-oriented design, Swing UI, file-based data, enums, the <code>Path</code> API, custom panel rendering, a turn-based game loop, and an optional Android build in one compact application — documented class-by-class with tables in the same style as the instructor’s Tetris lecture notes.</p>
+  <p><strong>Student:</strong> Emine Mihrinaz Kurt (24040102017) · <strong>GitHub:</strong> <a href="https://github.com/CortXVenomSkulls/virPet">CortXVenomSkulls/virPet</a></p>
+
+</div>
+</body>
+</html>
