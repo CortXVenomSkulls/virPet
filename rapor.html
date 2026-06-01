@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VirPet — Proje Raporu</title>
+  <style>
+    /* ── PDF / A4 yazdırma ── */
+    @page {
+      size: A4 portrait;
+      margin: 2.2cm 2cm 2.4cm 2cm;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      font-size: 11pt;
+    }
+
+    body {
+      font-family: "Times New Roman", Times, Georgia, serif;
+      line-height: 1.55;
+      color: #1a1a1a;
+      background: #e8e4dc;
+      margin: 0;
+      padding: 0;
+    }
+
+    .document {
+      max-width: 21cm;
+      margin: 1.5rem auto;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    }
+
+    @media print {
+      body { background: #fff; }
+      .document {
+        max-width: none;
+        margin: 0;
+        box-shadow: none;
+      }
+      .no-print { display: none !important; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    .page {
+      padding: 2.2cm 2cm;
+      min-height: 29.7cm;
+    }
+
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+    }
+
+    .avoid-break {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* Kapak */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      min-height: 25cm;
+      padding: 3cm 2cm;
+      border-bottom: 2px solid #333;
+    }
+
+    .cover .university {
+      font-size: 12pt;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      color: #444;
+    }
+
+    .cover h1 {
+      font-size: 22pt;
+      font-weight: bold;
+      margin: 0 0 0.75rem;
+      line-height: 1.25;
+    }
+
+    .cover .subtitle {
+      font-size: 13pt;
+      color: #333;
+      margin-bottom: 3rem;
+      max-width: 14cm;
+    }
+
+    .cover .meta {
+      width: 100%;
+      max-width: 12cm;
+      margin-top: 2rem;
+      text-align: left;
+      font-size: 12pt;
+    }
+
+    .cover .meta table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .cover .meta td {
+      padding: 0.45rem 0;
+      border-bottom: 1px solid #ccc;
+      vertical-align: top;
+    }
+
+    .cover .meta td:first-child {
+      width: 38%;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .cover .date {
+      margin-top: 3rem;
+      font-size: 11pt;
+      color: #555;
+    }
+
+    /* Başlıklar */
+    h1.doc-title {
+      font-size: 16pt;
+      border-bottom: 2px solid #333;
+      padding-bottom: 0.35rem;
+      margin: 0 0 1.25rem;
+    }
+
+    h2 {
+      font-size: 13pt;
+      margin: 1.75rem 0 0.65rem;
+      color: #222;
+    }
+
+    h3 {
+      font-size: 11.5pt;
+      margin: 1.25rem 0 0.5rem;
+      color: #333;
+    }
+
+    h4 {
+      font-size: 11pt;
+      margin: 1rem 0 0.35rem;
+      font-style: italic;
+    }
+
+    p { margin: 0 0 0.65rem; text-align: justify; }
+
+    ul, ol {
+      margin: 0 0 0.75rem;
+      padding-left: 1.35rem;
+    }
+
+    li { margin-bottom: 0.25rem; }
+
+    /* İçindekiler */
+    .toc ol {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.2rem 0;
+      border-bottom: 1px dotted #bbb;
+      font-size: 11pt;
+    }
+
+    .toc a { color: #1a1a1a; text-decoration: none; }
+
+    /* Tablolar */
+    table.data {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0 1rem;
+      font-size: 10pt;
+    }
+
+    table.data th,
+    table.data td {
+      border: 1px solid #333;
+      padding: 0.4rem 0.55rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.data th {
+      background: #f0ebe0;
+      font-weight: bold;
+    }
+
+    table.data tr:nth-child(even) td {
+      background: #faf8f4;
+    }
+
+    /* Kod */
+    pre, code {
+      font-family: "Consolas", "Liberation Mono", monospace;
+      font-size: 9pt;
+    }
+
+    pre {
+      background: #f5f2eb;
+      border: 1px solid #ccc;
+      padding: 0.65rem 0.75rem;
+      margin: 0.5rem 0 0.85rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    code {
+      background: #f0ebe4;
+      padding: 0.05em 0.25em;
+    }
+
+    .abstract {
+      background: #faf8f4;
+      border: 1px solid #ccc;
+      padding: 1rem 1.1rem;
+      margin: 1rem 0;
+      font-size: 10.5pt;
+    }
+
+    .figure {
+      border: 1px solid #999;
+      padding: 0.85rem;
+      margin: 1rem 0;
+      background: #fafafa;
+      font-size: 10pt;
+    }
+
+    .figure pre {
+      margin: 0;
+      border: none;
+      background: transparent;
+      padding: 0;
+      font-size: 9pt;
+      line-height: 1.4;
+    }
+
+    .caption {
+      font-size: 9.5pt;
+      color: #555;
+      margin-top: 0.5rem;
+      font-style: italic;
+      text-align: center;
+    }
+
+    .note {
+      border-left: 3px solid #666;
+      padding: 0.5rem 0.85rem;
+      margin: 0.75rem 0;
+      background: #f8f6f0;
+      font-size: 10.5pt;
+    }
+
+    footer.page-footer {
+      margin-top: 2rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid #ccc;
+      font-size: 9pt;
+      color: #666;
+      text-align: center;
+    }
+
+    .print-hint {
+      background: #5c483a;
+      color: #fff8e0;
+      text-align: center;
+      padding: 0.6rem;
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+    }
+
+    .print-hint kbd {
+      background: rgba(255,255,255,0.15);
+      padding: 0.1em 0.4em;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+<p class="print-hint no-print">PDF için: <kbd>Ctrl+P</kbd> (veya Yazdır) → hedef <strong>PDF olarak kaydet</strong>, kağıt <strong>A4</strong>, kenar boşlukları <strong>Varsayılan</strong>.</p>
+
+<div class="document">
+
+  <!-- ═══════════════ KAPAK ═══════════════ -->
+  <section class="page cover">
+    <p class="university">Java Programlama — Proje Raporu</p>
+    <h1>VirPet</h1>
+    <p class="subtitle">Reigns tarzı sanal evcil hayvan oyunu:<br>Java Swing masaüstü uygulaması ve Android portu</p>
+    <div class="meta avoid-break">
+      <table>
+        <tr><td>Öğrenci Adı Soyadı</td><td>Emine Mihrinaz Kurt</td></tr>
+        <tr><td>Öğrenci Numarası</td><td>24040102017</td></tr>
+        <tr><td>Proje Adı</td><td>VirPet (Virtual Pet)</td></tr>
+        <tr><td>Dil / Platform</td><td>Java 8+, Swing; Android (Gradle)</td></tr>
+        <tr><td>Ek Dokümantasyon</td><td><code>README.md</code>, <code>manual.html</code></td></tr>
+      </table>
+    </div>
+    <p class="date">Haziran 2025</p>
+  </section>
+
+  <!-- ═══════════════ ÖZET + İÇİNDEKİLER ═══════════════ -->
+  <section class="page page-break">
+    <h1 class="doc-title">Özet</h1>
+    <div class="abstract">
+      <p><strong>VirPet</strong>, Reigns benzeri kart tabanlı karar verme mekaniğini sanal evcil hayvan bakımıyla birleştiren bir Java projesidir. Oyuncu önce şapka, vücut, yüz ve bacak parçalarından oluşan bir pet oluşturur; ardından rastgele gelen olay kartlarına <em>Yes</em> veya <em>No</em> yanıtı vererek dört istatistiği (açlık, sevgi, kilo, sağlık) dengede tutmaya çalışır. Her turda pasif zaman geçişi statları otomatik değiştirir; sağlık veya sevgi sıfıra inince oyun biter.</p>
+      <p>Proje, iş mantığını arayüzden ayıran modüler bir sınıf yapısı (<code>PetGameModel</code>, olay kartı sistemi, sprite birleştirici) kullanır. Olay içerikleri kod dışında <code>event_cards.cards</code> dosyasında tutulur; böylece yeni kartlar derleme gerektirmeden eklenebilir. Aynı oyun mantığı <code>androidPort/</code> altında tek Activity dosyasıyla Android’e taşınmıştır. Bu rapor projenin genel dokümantasyonunu, mimarisini ve çalışma prensiplerini özetler.</p>
+    </div>
+
+    <h1 class="doc-title">İçindekiler</h1>
+    <nav class="toc">
+      <ol>
+        <li><a href="#giris">1. Giriş</a></li>
+        <li><a href="#tanim">2. Proje Tanımı ve Amaç</a></li>
+        <li><a href="#oyun">3. Oyun Mekaniği</a></li>
+        <li><a href="#mimari">4. Yazılım Mimarisi</a></li>
+        <li><a href="#siniflar">5. Sınıf Yapısı ve Modüller</a></li>
+        <li><a href="#varliklar">6. Varlık Sistemi</a></li>
+        <li><a href="#platform">7. Platformlar</a></li>
+        <li><a href="#calistirma">8. Kurulum ve Çalıştırma</a></li>
+        <li><a href="#teknoloji">9. Kullanılan Teknolojiler</a></li>
+        <li><a href="#sonuc">10. Sonuç</a></li>
+      </ol>
+    </nav>
+  </section>
+
+  <!-- ═══════════════ 1. GİRİŞ ═══════════════ -->
+  <section class="page page-break" id="giris">
+    <h1 class="doc-title">1. Giriş</h1>
+    <p>Sanal evcil hayvan oyunları, kullanıcıların düzenli etkileşim ve kaynak yönetimiyle bağ kurmasını sağlayan klasik bir türdür. <strong>VirPet</strong> bu türü, mobil oyun <em>Reigns</em>’in sade kart karar mekaniğiyle birleştirir: her turda tek bir olay metni ve iki seçenek sunulur; seçimler görünürde basit olsa da dört sayısal göstergenin uzun vadeli dengesini etkiler.</p>
+    <p>Proje iki hedefe yöneliktir:</p>
+    <ul>
+      <li><strong>Oynanabilir bir ürün:</strong> Pet oluşturma ekranı, oyun ekranı, stat çubukları, piksel sanat sprite’ları ve ses geri bildirimi.</li>
+      <li><strong>Öğretici kod yapısı:</strong> Model–görünüm ayrımına yakın düzen, dosyadan veri okuma, enum kullanımı, <code>java.nio.file.Path</code> ile kaynak yönetimi ve isteğe bağlı Android portu.</li>
+    </ul>
+    <p>Detaylı satır satır kod açıklamaları <code>manual.html</code> dosyasında; bu rapor ise projenin bütünsel teknik dokümantasyonunu sunar.</p>
+  </section>
+
+  <!-- ═══════════════ 2. TANIM ═══════════════ -->
+  <section class="page page-break" id="tanim">
+    <h1 class="doc-title">2. Proje Tanımı ve Amaç</h1>
+
+    <h2>2.1 Proje özeti</h2>
+    <p>VirPet, masaüstünde Java Swing ile çalışan pencere tabanlı bir uygulamadır. Oyuncu akışı iki ana fazdan oluşur:</p>
+    <ol>
+      <li><strong>Oluşturma (creation):</strong> Şapka, vücut stili, yüz stili ve bacak parçaları ok tuşlarıyla seçilir; pet’e isim verilir ve önizleme panelinde canlı sprite gösterilir.</li>
+      <li><strong>Oyun (game):</strong> <em>Start</em> ile oyun ekranına geçilir; arka plan müziği, olay kartları ve Yes/No düğmeleri devreye girer.</li>
+    </ol>
+
+    <h2>2.2 Tasarım hedefleri</h2>
+    <table class="data avoid-break">
+      <tr><th>Hedef</th><th>Uygulama</th></tr>
+      <tr><td>Genişletilebilir içerik</td><td>44 olay kartı harici <code>.cards</code> dosyasında; yeni kart eklemek için yalnızca metin düzenlemek yeterli</td></tr>
+      <tr><td>Ayrık iş kuralları</td><td><code>PetGameModel</code> stat, zaman ve kaybetme mantığını UI’dan izole eder</td></tr>
+      <tr><td>Görsel geri bildirim</td><td>Kilo ve sevgiye göre dinamik vücut/yüz PNG seçimi; katmanlı 16×48 sprite</td></tr>
+      <tr><td>Çoklu platform</td><td>Masaüstü (WAV + Swing) ve Android (MP3 + View/Activity)</td></tr>
+    </table>
+
+    <h2>2.3 Proje dizin yapısı</h2>
+    <pre>virPet/
+├── PetCreationApp.java      Ana arayüz ve oyun döngüsü
+├── PetGameModel.java        Stat kuralları, zaman, kaybetme
+├── PetSpriteComposer.java   Sprite birleştirme
+├── EventCard.java           Kart veri modeli
+├── StatDelta.java           Seçim etkisi (4 stat)
+├── EventCardLoader.java     Kart dosyası okuyucu
+├── EventCardDeck.java       Rastgele kart dağıtımı
+├── GameAudio.java           Masaüstü ses (WAV)
+├── assets/                  Görseller, ses, font, kartlar
+├── androidPort/             Gradle Android projesi
+├── manual.html              Kod el kitabı (Türkçe)
+├── README.md                Hızlı başlangıç
+└── rapor.html               Bu belge</pre>
+  </section>
+
+  <!-- ═══════════════ 3. OYUN ═══════════════ -->
+  <section class="page page-break" id="oyun">
+    <h1 class="doc-title">3. Oyun Mekaniği</h1>
+
+    <h2>3.1 İstatistikler (stats)</h2>
+    <p>Dört gösterge 0–100 aralığında tutulur (<code>STAT_MIN</code>, <code>STAT_MAX</code>). Başlangıç değerleri: sağlık 100, sevgi 70, açlık 30, kilo 50.</p>
+    <table class="data avoid-break">
+      <tr><th>Stat</th><th>Anlam</th><th>Risk</th></tr>
+      <tr><td>Hunger (açlık)</td><td>Yüksek = pet aç</td><td>Dolaylı; aşırı kilo/sağlık etkileşimi</td></tr>
+      <tr><td>Affection (sevgi)</td><td>Düşük = mutsuz yüz</td><td>0 → pet evi terk eder (<code>LEFT_HOME</code>)</td></tr>
+      <tr><td>Weight (kilo)</td><td>Görsel gövde tipi</td><td>&lt;25 veya &gt;75 iken her tur sağlık −2</td></tr>
+      <tr><td>Health (sağlık)</td><td>Genel yaşam</td><td>0 → oyun biter (obezite veya açlık mesajı)</td></tr>
+    </table>
+
+    <h2>3.2 Olay kartları ve seçimler</h2>
+    <p>Her turda <code>EventCardDeck</code> bir sonraki kartı verir. Oyuncu <em>Yes</em> veya <em>No</em> seçince ilgili <code>StatDelta</code> uygulanır; ardından otomatik <strong>zaman geçişi</strong> çalışır. Kart metinleri İngilizcedir; örnek format:</p>
+    <pre>card empty_bowl
+text
+The food bowl is empty. Your pet looks at you with big eyes. Fill it up?
+yes hunger=-14 affection=3 weight=6
+no hunger=6 affection=-6
+end</pre>
+    <p>Dosyada toplam <strong>44</strong> kart tanımlıdır. <code>#</code> ile başlayan satırlar ve boş satırlar yok sayılır.</p>
+
+    <h2>3.3 Pasif zaman geçişi</h2>
+    <p>Her <code>applyChoice</code> sonrası <code>applyTimePassage()</code> şu sabitleri uygular:</p>
+    <ul>
+      <li>Açlık: <strong>+3</strong></li>
+      <li>Kilo: <strong>−2</strong></li>
+      <li>Sevgi: <strong>−1</strong></li>
+      <li>Kilo ≤25 veya ≥75 ise sağlık: <strong>−2</strong></li>
+    </ul>
+    <p>Tüm değerler <code>clamp()</code> ile 0–100 arasında sınırlandırılır.</p>
+
+    <h2>3.4 Kaybetme koşulları</h2>
+    <p><code>GameOverReason</code> enum’u üç sonuç tipi tanımlar:</p>
+    <table class="data avoid-break">
+      <tr><th>Enum</th><th>Koşul</th><th>Kullanıcı mesajı (örnek)</th></tr>
+      <tr><td><code>LEFT_HOME</code></td><td>Sevgi ≤ 0</td><td>«… left the house.»</td></tr>
+      <tr><td><code>OBESITY</code></td><td>Sağlık ≤ 0, yüksek kilo</td><td>«… died of obesity.»</td></tr>
+      <tr><td><code>STARVATION</code></td><td>Sağlık ≤ 0, düşük kilo</td><td>«… starved to death.»</td></tr>
+    </table>
+    <p>Game over sonrası <em>Play again</em> oluşturma ekranına döner; model ve deste yeniden başlatılır.</p>
+
+    <h2>3.5 Oyun akış diyagramı</h2>
+    <div class="figure avoid-break">
+      <pre>
+  [Uygulama açılır]
+         │
+         ▼
+  [Oluşturma: parça seç, isim ver]
+         │
+         ▼ Start
+  [Oyun: kart göster]
+         │
+    Yes / No
+         │
+         ▼
+  [StatDelta + zaman geçişi]
+         │
+    Kaybettin mi? ──Hayır──► (sonraki kart)
+         │
+        Evet
+         ▼
+  [Game over + ses] ──Play again──► [Oluşturma]
+      </pre>
+      <p class="caption">Şekil 1 — VirPet oyun döngüsü (basitleştirilmiş)</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 4. MİMARİ ═══════════════ -->
+  <section class="page page-break" id="mimari">
+    <h1 class="doc-title">4. Yazılım Mimarisi</h1>
+
+    <h2>4.1 Katmanlar</h2>
+    <p>Mimari fiilen üç katmana ayrılır:</p>
+    <ol>
+      <li><strong>Sunum:</strong> <code>PetCreationApp</code> — Swing panelleri, düğmeler, önizleme çizimi, kart metni, stat çubukları.</li>
+      <li><strong>İş mantığı:</strong> <code>PetGameModel</code> — stat güncelleme, sprite yolu çözümleme, kaybetme değerlendirmesi.</li>
+      <li><strong>Veri / altyapı:</strong> <code>EventCardLoader</code>, <code>EventCardDeck</code>, <code>PetSpriteComposer</code>, <code>GameAudio</code>, <code>assets/</code>.</li>
+    </ol>
+
+    <h2>4.2 Veri akışı (bir tur)</h2>
+    <div class="figure avoid-break">
+      <pre>
+PetCreationApp          PetGameModel           EventCardDeck
+      │                       │                       │
+      │── drawNextCard() ────►│                       │
+      │◄── EventCard ─────────│◄── next card ─────────│
+      │                       │                       │
+      │── applyChoice(delta) ►│                       │
+      │                       │── clamp stats         │
+      │                       │── applyTimePassage  │
+      │                       │── evaluateLoss      │
+      │◄── getters / isGameOver                       │
+      │── resolveBody/FacePath►│ (sprite PNG yolları) │
+      │── PetSpriteComposer.compose(...)             │
+      │── repaint stat bars + pet panel              │
+      </pre>
+      <p class="caption">Şekil 2 — Tek seçim sonrası bileşen etkileşimi</p>
+    </div>
+
+    <h2>4.3 Arayüz düzeni (masaüstü)</h2>
+    <p><code>CardLayout</code> ile iki tam ekran panel arasında geçiş yapılır: oluşturma ve oyun. Oyun panelinde pet görüntüsü, dört stat çubuğu, kaydırılabilir olay metni ve Yes/No düğmeleri yer alır. Global fare tıklamaları <code>GameAudio</code> ile kısa tap sesi çalar.</p>
+  </section>
+
+  <!-- ═══════════════ 5. SINIFLAR ═══════════════ -->
+  <section class="page page-break" id="siniflar">
+    <h1 class="doc-title">5. Sınıf Yapısı ve Modüller</h1>
+
+    <table class="data">
+      <tr><th>Sınıf</th><th>Sorumluluk</th><th>Önemli kavramlar</th></tr>
+      <tr>
+        <td><code>StatDelta</code></td>
+        <td>Bir seçimin hunger/affection/weight/health deltasını taşır</td>
+        <td><code>public static final ZERO</code> sabit nesne</td>
+      </tr>
+      <tr>
+        <td><code>EventCard</code></td>
+        <td>id, metin, yes/no deltaları</td>
+        <td>Encapsulation, immutable alanlar</td>
+      </tr>
+      <tr>
+        <td><code>EventCardLoader</code></td>
+        <td><code>event_cards.cards</code> parse</td>
+        <td>try-with-resources, <code>BufferedReader</code>, satır durum makinesi</td>
+      </tr>
+      <tr>
+        <td><code>EventCardDeck</code></td>
+        <td>Karışık sıra, ardışık aynı kartı önleme</td>
+        <td><code>Collections.shuffle</code>, indeks yönetimi</td>
+      </tr>
+      <tr>
+        <td><code>PetGameModel</code></td>
+        <td>Statlar, zaman, kaybetme, PNG yolu</td>
+        <td>enum, <code>Path.resolve</code>, <code>clamp</code></td>
+      </tr>
+      <tr>
+        <td><code>PetSpriteComposer</code></td>
+        <td>16×48 ARGB tuval, katman çizimi</td>
+        <td><code>BufferedImage</code>, <code>Graphics2D</code>, <code>ImageIO</code></td>
+      </tr>
+      <tr>
+        <td><code>GameAudio</code></td>
+        <td>bg / tap / death / runaway WAV</td>
+        <td><code>javax.sound.sampled.Clip</code></td>
+      </tr>
+      <tr>
+        <td><code>PetCreationApp</code></td>
+        <td>UI, olay döngüsü, asset yükleme</td>
+        <td>Swing, <code>CardLayout</code>, özel <code>JPanel</code> alt sınıfları</td>
+      </tr>
+    </table>
+
+    <h2>5.1 PetGameModel — eşik değerleri</h2>
+    <table class="data avoid-break">
+      <tr><th>Sabit</th><th>Değer</th><th>Kullanım</th></tr>
+      <tr><td><code>WEIGHT_SKINNY</code></td><td>35</td><td>Altında skinny gövde PNG</td></tr>
+      <tr><td><code>WEIGHT_FAT</code></td><td>65</td><td>Üstünde fat gövde PNG</td></tr>
+      <tr><td><code>AFFECTION_SAD / HAPPY</code></td><td>35 / 65</td><td>Sad / happy yüz PNG</td></tr>
+      <tr><td><code>WEIGHT_HEALTH_LOW / HIGH</code></td><td>25 / 75</td><td>Ekstra sağlık kaybı bandı</td></tr>
+    </table>
+
+    <h2>5.2 EventCardDeck — tekrar önleme</h2>
+    <p>Deste her turda karıştırılabilir; bir kart çekildikten hemen sonra aynı kart tekrar gelmez (son çekilen id saklanır). Bu, ardışık tekrarlayan olayların oyuncu deneyimini bozmasını azaltır.</p>
+  </section>
+
+  <!-- ═══════════════ 6. VARLIKLAR ═══════════════ -->
+  <section class="page page-break" id="varliklar">
+    <h1 class="doc-title">6. Varlık Sistemi</h1>
+
+    <h2>6.1 Sprite katmanları</h2>
+    <p>Pet görüntüsü dört PNG parçasının 16×48 piksel tuval üzerine alttan üste birleştirilmesiyle oluşur:</p>
+    <table class="data avoid-break">
+      <tr><th>Katman</th><th>Y konumu</th><th>Seçim kriteri</th></tr>
+      <tr><td>Bacak</td><td>32</td><td>Oluşturmada seçilen <code>legsN.png</code></td></tr>
+      <tr><td>Gövde</td><td>16</td><td>Stil id + kilo → skinny / normal / fat</td></tr>
+      <tr><td>Yüz</td><td>16</td><td>Stil id + sevgi → sad / normal / happy</td></tr>
+      <tr><td>Şapka</td><td>0</td><td><code>hats/hatN.png</code></td></tr>
+    </table>
+    <p>Parça dosyaları <code>assets/parts/</code> altında tutulur; üç vücut stili (0–2) ve iki yüz stili (0–1) desteklenir.</p>
+
+    <h2>6.2 Ses ve görsel tema</h2>
+    <ul>
+      <li><strong>Font:</strong> <code>DS-TERM.TTF</code> — retro terminal görünümü</li>
+      <li><strong>Arka plan:</strong> <code>bg.png</code> (2730×1536); önizleme panelleri en-boy oranını korur</li>
+      <li><strong>Ses (masaüstü):</strong> <code>bg.wav</code>, <code>tap.wav</code>, <code>death.wav</code>, <code>runaway.wav</code></li>
+      <li><strong>Ses (Android):</strong> Aynı içerik MP3 olarak <code>app/src/main/assets/</code></li>
+    </ul>
+
+    <h2>6.3 Olay kartı dosya formatı</h2>
+    <p>Anahtar kelimeler: <code>card</code>, <code>text</code>, <code>yes</code>, <code>no</code>, <code>end</code>. Delta satırları <code>stat=değer</code> çiftleri içerir (ör. <code>hunger=-14</code>). Yazılmayan statlar için <code>StatDelta.ZERO</code> kullanılır.</p>
+  </section>
+
+  <!-- ═══════════════ 7. PLATFORMLAR ═══════════════ -->
+  <section class="page page-break" id="platform">
+    <h1 class="doc-title">7. Platformlar</h1>
+
+    <h2>7.1 Masaüstü (Java Swing)</h2>
+    <p>Ana giriş noktası <code>PetCreationApp.main</code>. Derleme ve çalıştırma proje kökünden yapılır; tüm <code>.java</code> dosyaları birlikte derlenmelidir (sürüm uyumsuzluğu önlenir).</p>
+
+    <h2>7.2 Android portu</h2>
+    <p><code>androidPort/</code> ayrı bir Gradle projesidir. Oyun mantığı <code>VirPetActivity.java</code> içinde tek dosyada toplanmıştır; masaüstü sınıflarıyla paralel stat ve kart kuralları uygulanır. Farklar:</p>
+    <table class="data avoid-break">
+      <tr><th>Özellik</th><th>Masaüstü</th><th>Android</th></tr>
+      <tr><td>Arayüz</td><td>Swing (<code>JFrame</code>, paneller)</td><td>Activity + özel <code>View</code> çizimi</td></tr>
+      <tr><td>Ses</td><td><code>javax.sound.sampled</code> (WAV)</td><td><code>MediaPlayer</code> (MP3)</td></tr>
+      <tr><td>Dosya</td><td><code>java.nio.file</code>, çalışma dizini <code>assets/</code></td><td><code>AssetManager</code>, APK içi assets</td></tr>
+      <tr><td>Derleme</td><td><code>javac</code> + <code>java</code></td><td><code>./gradlew assembleDebug</code></td></tr>
+    </table>
+    <p>Asset güncellemesi: masaüstü <code>assets/</code> değişince Android tarafına kopyalanmalıdır (<code>cp -r ../assets/* app/src/main/assets/</code>).</p>
+  </section>
+
+  <!-- ═══════════════ 8. ÇALIŞTIRMA ═══════════════ -->
+  <section class="page page-break" id="calistirma">
+    <h1 class="doc-title">8. Kurulum ve Çalıştırma</h1>
+
+    <h2>8.1 Gereksinimler</h2>
+    <ul>
+      <li><strong>Masaüstü:</strong> JDK 8 veya üzeri; ek ses kütüphanesi gerekmez.</li>
+      <li><strong>Android:</strong> Android SDK, JDK 17 (Gradle 8.x), Android Studio önerilir.</li>
+    </ul>
+
+    <h2>8.2 Masaüstü komutları</h2>
+    <pre>cd virPet
+javac -source 8 -target 8 *.java
+java PetCreationApp</pre>
+    <p class="note">Komutlar proje kök dizininden çalıştırılmalıdır; <code>assets/</code> göreli yol olarak okunur.</p>
+
+    <h2>8.3 Android komutları</h2>
+    <pre>cd androidPort
+export ANDROID_HOME=~/Android/Sdk
+./gradlew assembleDebug</pre>
+    <p>Çıktı APK: <code>app/build/outputs/apk/debug/app-debug.apk</code></p>
+
+    <h2>8.4 İlgili belgeler</h2>
+    <ul>
+      <li><code>README.md</code> — hızlı özet ve kart formatı</li>
+      <li><code>manual.html</code> — sınıf sınıf kod el kitabı, Mermaid diyagramları, Android detayı</li>
+      <li><code>rapor.html</code> — bu proje raporu (PDF yazdırmaya uygun)</li>
+    </ul>
+  </section>
+
+  <!-- ═══════════════ 9. TEKNOLOJİ ═══════════════ -->
+  <section class="page page-break" id="teknoloji">
+    <h1 class="doc-title">9. Kullanılan Teknolojiler</h1>
+
+    <table class="data">
+      <tr><th>Alan</th><th>Masaüstü</th><th>Android</th></tr>
+      <tr><td>Dil</td><td>Java 8+</td><td>Java (Android SDK)</td></tr>
+      <tr><td>GUI</td><td>Java Swing</td><td>Android View sistemi</td></tr>
+      <tr><td>Görüntü</td><td>AWT <code>BufferedImage</code>, ImageIO</td><td>Bitmap, Canvas</td></tr>
+      <tr><td>Ses</td><td><code>javax.sound.sampled</code></td><td><code>MediaPlayer</code></td></tr>
+      <tr><td>Dosya I/O</td><td><code>java.nio.file</code></td><td><code>AssetManager</code></td></tr>
+      <tr><td>Derleme</td><td><code>javac</code></td><td>Gradle Kotlin DSL (<code>build.gradle.kts</code>)</td></tr>
+    </table>
+
+    <h2>9.1 Öne çıkan Java kavramları</h2>
+    <p>Projede pedagojik olarak şu yapılar kullanılmıştır: <strong>enum</strong> (<code>GameOverReason</code>), <strong>immutable veri sınıfları</strong>, <strong>static factory/loader</strong> metotları, <strong>try-with-resources</strong>, <strong>Path API</strong>, <strong>inner class</strong> (önizleme panelleri), <strong>event listener</strong> (Swing fare/ pencere olayları).</p>
+  </section>
+
+  <!-- ═══════════════ 10. SONUÇ ═══════════════ -->
+  <section class="page page-break" id="sonuc">
+    <h1 class="doc-title">10. Sonuç</h1>
+    <p>VirPet, kart tabanlı karar verme ile sanal pet bakımını bir araya getiren, modüler ve genişletilebilir bir Java projesidir. İş kuralları <code>PetGameModel</code> ve harici kart dosyasında merkezileştirilmiş; görsel geri bildirim kilo ve sevgi eşiklerine bağlanmıştır. Masaüstü sürüm tam özellikli bir Swing deneyimi sunarken, Android portu aynı tasarımın mobil dağıtımını gösterir.</p>
+    <p>Gelecekte kart sayısının artırılması, yeni parça setleri, kayıt/yükleme (save game) veya lokalizasyon (Türkçe olay metinleri) düşük maliyetli geliştirmeler olarak öne çıkar; mevcut mimari bu eklemelere uygun ayrım sağlar.</p>
+
+    <footer class="page-footer">
+      VirPet Proje Raporu — Emine Mihrinaz Kurt (24040102017) — Haziran 2025
+    </footer>
+  </section>
+
+</div>
+</body>
+</html>
